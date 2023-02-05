@@ -33,26 +33,58 @@ class HTTPResponse(object):
         self.body = body
 
 class HTTPClient(object):
-    #def get_host_port(self,url):
+    def get_host_port(self,url):
+        """
+        Port getter based on the url
+        Hostname getter based on the url
+        Path getter based on the url
+        """
+        parse_result = urllib.parse.urlparse(url)
+        port = parse_result.port if parse_result.port else 80 # port 80 by default
+        host_name = parse_result.hostname 
+        path = parse_result.path if parse_result.path != "" else "/" 
+        if host_name is None: 
+            if path.find("/") < 0: # if cannot locate a single '/' 
+                path += "/"
+            else: # successfully locate the first '/'
+                temp_index = path.find("/")
+                host_name = path[0 : temp_index]
+                path = path[temp_index: ]      
+        return port, host_name, path
 
     def connect(self, host, port):
+        """"
+        Connect to the webserver via provided host and port
+        """
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((host, port))
         return None
 
     def get_code(self, data):
-        return None
+        """
+        Response code getter 
+        """
+        response_code = data.split()[1]
+        response_code = int(response_code) # cast from str to int type 
+        return response_code
 
     def get_headers(self,data):
-        return None
-
+        """
+        Headers getter by using response 
+        """
+        # Parse the headers into a dictionary 
+        headers_dict = dict()
+    
     def get_body(self, data):
+        
         return None
     
     def sendall(self, data):
+        
         self.socket.sendall(data.encode('utf-8'))
         
     def close(self):
+        
         self.socket.close()
 
     # read everything from the socket

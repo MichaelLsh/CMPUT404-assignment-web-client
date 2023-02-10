@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # coding: utf-8
 # Copyright 2016 Abram Hindle, https://github.com/tywtyw2002, and https://github.com/treedust
+# Copyright 2023 Shihao Liu
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -39,7 +40,6 @@ class HTTPClient(object):
         Hostname getter from the url
         Path getter from the url
         """
-        url = self.valid_url(url)
         # print("!@#$%^&*")
         # print(url)
         parse_result = urllib.parse.urlparse(url)
@@ -159,21 +159,16 @@ class HTTPClient(object):
         return HTTPResponse(response_code, body_content)
 
     def command(self, url, command="GET", args=None):
+        self.valid_url(url)
         if (command == "POST"):
+            self.valid_url(url)
             return self.POST( url, args )
         else: # command == "GET"
+            self.valid_url(url)
             return self.GET( url, args )
     
-    def valid_url(self, url):
-        """
-        Citation: https://www.geeksforgeeks.org/python-check-url-string/ 
-        Author: geeksforgeeks.org
-        Date: 10/02/2023 
-        Use: To check for valid url
-        """
-        url = url.translate({ord("'"): None}) # remove all "'"
         
-        return url
+        
         
     
 if __name__ == "__main__":

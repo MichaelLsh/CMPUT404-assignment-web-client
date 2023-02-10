@@ -39,10 +39,17 @@ class HTTPClient(object):
         Hostname getter from the url
         Path getter from the url
         """
+        url = self.valid_url(url)
+        # print("!@#$%^&*")
+        # print(url)
         parse_result = urllib.parse.urlparse(url)
         port = parse_result.port if parse_result.port else 80 # port 80 by default
-        host_name = parse_result.hostname 
+        host_name = parse_result.hostname if parse_result.hostname else socket.gethostname()
         path = parse_result.path if parse_result.path != "" else "/" 
+        # print("*&^%$#@!")
+        # print(port)
+        # print(host_name)
+        # print(path)
         if host_name is None: 
             if path.find("/") < 0: # if cannot locate a single '/' 
                 path += "/"
@@ -156,6 +163,18 @@ class HTTPClient(object):
             return self.POST( url, args )
         else: # command == "GET"
             return self.GET( url, args )
+    
+    def valid_url(self, url):
+        """
+        Citation: https://www.geeksforgeeks.org/python-check-url-string/ 
+        Author: geeksforgeeks.org
+        Date: 10/02/2023 
+        Use: To check for valid url
+        """
+        url = url.translate({ord("'"): None}) # remove all "'"
+        
+        return url
+        
     
 if __name__ == "__main__":
     client = HTTPClient()
